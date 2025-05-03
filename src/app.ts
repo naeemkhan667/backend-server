@@ -32,6 +32,7 @@ app.use(apiLimiterMiddleware); // Apply api limiter middleware
 app.use('/api', api);
 //app.use('/api', todoRoutes);
 
+
 app.get('/', (req: Request, res: Response) => {
   res.success([], 'Successfully received a request');
 });
