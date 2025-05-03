@@ -101,3 +101,41 @@ Executes the compiled JavaScript file in the dist directory. This script is typi
 
 # dev: 
 Uses nodemon with ts-node to run the src/index.ts file directly. nodemon watches for file changes and automatically restarts the server, providing a convenient development workflow with hot-reloading.
+
+
+# Other mandatory packages to be installed
+
+npm install express dotenv
+
+npm install cors @types/cors
+
+npm install express-rate-limit
+
+// Configure the rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `windowMs`
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: 'draft-7', // Include RateLimit headers according to draft-7
+  legacyHeaders: false, // Disable the X-RateLimit-* headers
+});
+
+# windowMs: 
+The time window in milliseconds during which the limit is enforced. In this example, 15 * 60 * 1000 milliseconds equals 15 minutes.
+
+# limit: 
+The maximum number of requests allowed from a single client within the windowMs. Here, it's set to 100 requests.
+
+# message: 
+The response body sent when a client exceeds the rate limit.
+
+# standardHeaders: 
+Specifies whether to include standard RateLimit headers in the response. draft-7 is a common choice.
+legacyHeaders: Set to false to disable older X-RateLimit-* headers.
+
+
+
+We can also install the following packagesa as well.
+
+- winston
+- npm install compression

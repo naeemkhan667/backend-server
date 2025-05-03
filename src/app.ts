@@ -3,43 +3,41 @@ dotenv.config();
 
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit'; // Import rateLimit
+//import rateLimit from 'express-rate-limit'; // Import rateLimit
 import logger from './utils/logger.util'; // Import the configured logger
 import responseMiddleware from './middlewares/response.middleware';
 import errorHandler from './middlewares/error.middleware';
 import notFoundMiddleware from './middlewares/notfound.middleware';
-const app: Application = express();
-const port = process.env.PORT || 3000;
+import apiLimiterMiddleware from './middlewares/ratelimiter.middleware';
 
-// Configure the rate limiter
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100, // Limit each IP to 100 requests per `windowMs`
-    message: 'Too many requests from this IP, please try again after 15 minutes',
-    standardHeaders: 'draft-7', // Include RateLimit headers according to draft-7
-    legacyHeaders: false, // Disable the X-RateLimit-* headers
-  });
+//import todoRoutes from "./routes/todo.routes";
+
+import api from './api.routes';
+
+const app: Application = express();
 
 // Use cors middleware
 app.use(cors());
 
 // Body parsing middleware
 app.use(express.json()); // For parsing application/json
+
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+app.use(responseMiddleware); // Apply response middleware
+app.use(apiLimiterMiddleware); // Apply api limiter middleware
 
-app.use(responseMiddleware);
+// mount routes here
+//app.use('/api/v1', apiLimiter, require('./routes'));
 
+app.use('/api', api);
+//app.use('/api', todoRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.success([], 'Successfully received a request');
 });
-
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
+// mount routes here
 
 app.use(notFoundMiddleware);
-
 app.use(errorHandler);
+
+export default app;
