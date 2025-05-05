@@ -1,52 +1,28 @@
-// import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { SuccessResponse, ErrorResponse } from '../interfaces/response.interface';
 
-// // The augmentation in src/@types/express/index.d.ts makes the
-// // success and error methods available on the Response type here.
+const responseHandler = (req: Request, res: Response, next: NextFunction): void => {
 
-// const responseMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-//   res.success = (data = null, message = 'Success', errorCode = null): Response => {
-//     return res.status(200).json({
-//       success: true,
-//       message,
-//       data,
-//       errorCode,
-//     });
-//   };
 
-//   res.error = (message = 'Something went wrong', statusCode = 500, options = {}): Response => {
-//     return res.status(statusCode).json({
-//       success: false,
-//       message,
-//       ...options, // Spread the options object into the response body
-//     });
-//   };
+    res.success = <T>(data: T, statusCode: number = 200, message: string = 'Success'): Response<SuccessResponse<T>> => {
 
-//   next();
-// };
+        return res.status(statusCode).json({
+            status: 'success',
+            message,
+            data
+        });
+    }
 
-// export default responseMiddleware;
+    res.error = (message: string = 'Error', statusCode: number = 500, details: any = null): Response<ErrorResponse> => {
+        return res.status(statusCode).json({
+            status: 'error',
+            message,
+            details
+        });
+    }
 
-// middlewares/responseHandler.ts
-import { Request, Response, NextFunction } from "express";
 
-const responseHandler = (req: Request, res: Response, next: NextFunction) : void => {
-  res.success = (data, message = "Success") => {
-    res.status(200).json({
-      success: true,
-      message,
-      data,
-    });
-  };
 
-  res.error = (message, statusCode = 400, errors = null): Response => {
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      errors,
-    });
-  };
-
-  next();
 };
 
 export default responseHandler;

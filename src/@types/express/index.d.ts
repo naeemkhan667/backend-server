@@ -32,11 +32,34 @@
 // }
 
 // types/express/index.d.ts
-import "express";
+// import "express";
 
-declare module "express-serve-static-core" {
+// declare module "express-serve-static-core" {
+//   interface Response {
+//     success: (data: any, message?: string) => void;
+//     error: (message: string, statusCode?: number, errors?: any) => void;
+//   }
+// }
+
+// import { SuccessResponse, ErrorResponse } from '../interfaces/response.interface';
+
+// // Augment the 'express-serve-static-core' module
+// declare module 'express-serve-static-core' {
+//   interface Response {
+//     success: <T = any>(data: T, statusCode?: number, message?: string) => this;
+//     error: (message: string, statusCode?: number, details?: any) => this;
+//   }
+// }
+
+// src/types/express.d.ts
+
+import { SuccessResponse, ErrorResponse } from '../interfaces/response.interface';
+
+// Augment the 'express-serve-static-core' module
+declare module 'express-serve-static-core' {
   interface Response {
-    success: (data: any, message?: string) => void;
-    error: (message: string, statusCode?: number, errors?: any) => void;
+    success: <T = any>(data: T, statusCode?: number, message?: string) => this;
+    //error: (success: boolean,message: string, statusCode?: number, details?: any) => this;
+    error:(message: string, statusCode?: number, details?: any) => this;
   }
 }

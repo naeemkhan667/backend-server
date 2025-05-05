@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import cors from 'cors';
 //import rateLimit from 'express-rate-limit'; // Import rateLimit
 import logger from './utils/logger.util'; // Import the configured logger
@@ -34,11 +33,13 @@ app.use('/api', api);
 
 
 app.get('/', (req: Request, res: Response) => {
-  res.success([], 'Successfully received a request');
+  //res.success([], 'Successfully received a request');
+  res.success('Hello World!');
+
 });
 // mount routes here
 
 app.use(notFoundMiddleware);
-app.use(errorHandler);
+app.use(errorHandler as ErrorRequestHandler);
 
 export default app;
