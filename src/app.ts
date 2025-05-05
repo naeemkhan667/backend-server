@@ -34,7 +34,8 @@ app.use('/api', api);
 
 app.get('/', (req: Request, res: Response) => {
   //res.success([], 'Successfully received a request');
-  res.success('Hello World!');
+  //res.success('Hello World!');
+  res.success([], 200, 'message');
 
 });
 // mount routes here
