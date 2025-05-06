@@ -13,3 +13,8 @@ export const todoAddSchema = Joi.object({
   
   // Add more properties as needed
 });
+
+export const todoUpdateSchema = Joi.object({
+  title: Joi.string().optional(),
+  completed: Joi.boolean().optional(),
+});
