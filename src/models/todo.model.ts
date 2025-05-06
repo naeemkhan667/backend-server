@@ -1,17 +1,20 @@
-import { Schema, model, Document } from 'mongoose';
-//import { Todo } from '../types/todo.type';
-import {ITodo} from '../interfaces/todo.interface';
+import mongoose, { Schema, Document } from 'mongoose';
+import { ITodo } from '../interfaces/todo.interface';
 
+const TodoSchema: Schema = new Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  completed: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
 
-export interface ITodoDocument extends ITodo, Document  { };
+// Update the updatedAt field on save
+// TodoSchema.pre('save', function (next) {
+//   this.updatedAt = new Date();
+//   next();
+// });
 
+const Todo = mongoose.model<ITodo>('Todo', TodoSchema);
 
-const todoSchema = new Schema<ITodoDocument>(
-  {
-    title: { type: String, required: true },
-    completed: { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
-
-export const TodoModel = model<ITodoDocument>('Todo', todoSchema);
+export default Todo;
