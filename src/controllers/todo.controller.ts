@@ -4,7 +4,7 @@ import { TodoModel } from '../models/todo.model';
 export const getTodos = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const todos = await TodoModel.find().sort({ createdAt: -1 });
-        res.success(todos, 200, 'todo');
+        res.success(todos, 200, "Todos fetched successfully");
     } catch (err) {
         next(err);
     }
