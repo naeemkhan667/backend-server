@@ -16,14 +16,13 @@ type ValidationSource = 'body' | 'query' | 'params';
  * @param source - The part of the request to validate ('body', 'query', or 'params').
  * @returns An Express middleware function.
  */
-const validateSchema = (schema: Joi.ObjectSchema, source: ValidationSource) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+const validateSchema = (schema: Joi.ObjectSchema, source: ValidationSource = 'body') => (req: Request, res: Response, next: NextFunction) => {
     // Validate the specified source of the request against the schema
     const { error, value } = schema.validate(req[source], {
       abortEarly: false, // Collect all validation errors
       stripUnknown: true, // Remove any unknown fields from the validated data
     });
-
+    
     if (error) {
       // If validation fails, format the Joi errors into a standardized structure
       const validationErrors: ValidationErrorDetail[] = error.details.map(detail => ({
@@ -44,6 +43,6 @@ const validateSchema = (schema: Joi.ObjectSchema, source: ValidationSource) => {
     // Proceed to the next middleware or route handler
     next();
   };
-};
+//};
 
 export default validateSchema;
