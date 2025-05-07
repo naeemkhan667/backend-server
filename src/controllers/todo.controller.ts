@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import TodoModel from '../models/todo.model';
 import mongoose from 'mongoose';
+import { SuccessResponse } from '../interfaces/response.interface';
 
 export const getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -22,10 +23,10 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
     }
 };
 
-export const getAll = async (req: Request, res: Response, next: NextFunction) => {
+export const getAll = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
     try {
         const todos = await TodoModel.find();
-        res.success(todos, 200, "Todos fetched successfully");
+       res.success(todos, 200, "Todos fetched successfully");
     } catch (error) {
         console.error("Get All Todos Error:", error);
         next(error);
