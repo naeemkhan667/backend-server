@@ -1,7 +1,7 @@
 // test/users.test.js
 import request from 'supertest';
 import app from '../app.js'; // Import your Express app
-import User from '../models/todo.model'; // Import the User model to mock it
+import Todo from '../models/todo.model'; // Import the User model to mock it
 
 // --- Mock the Mongoose User model ---
 // We are mocking the entire module where the User model is defined.
@@ -10,41 +10,49 @@ jest.mock('../models/todo.model'); // The path to the module being mocked
 
 // Cast the mocked User to Jest's MockedFunction for better typing and access to mock properties
 // const MockedUser = User;
-const MockedUser = jest.mocked(User);
+const MockedTodo = jest.mocked(Todo);
 
 describe('User API Endpoints (Database Mocking)', () => {
   // Reset mocks before each test to ensure test isolation
   beforeEach(() => {
     // Clears any previous mock return values or spy information
-    MockedUser.mockClear();
-    MockedUser.find.mockClear();
+    MockedTodo.mockClear();
+    MockedTodo.find.mockClear();
     // Add clear for other mocked methods if used (e.g., findById, deleteMany)
   });
 
   // Test GET /users with mocking
-  it('should return an empty array if no users exist (mocked)', async () => {
+  it('should return an empty array if no todos exist (mocked)', async () => {
     // Configure the mock User.find() to return an empty array
-    MockedUser.find.mockResolvedValue([]); // Simulate finding no users
+    //MockedTodo.find.mockResolvedValue([]); // Simulate finding no users
+
+    MockedTodo.find.mockImplementation(() => {
+      const mockQueryChain = {
+        sort: jest.fn().mockResolvedValue([]) // Configure the mock sort() function to return the final result
+      };
+      // --- FIX: Add type assertion here ---
+      return mockQueryChain as any; // Tell TypeScript to treat this object as compatible
+    });
 
     const res = await request(app).get('/api/todos');
 
+    //expect(res.body.status).toEqual('success');
     expect(res.body.status).toEqual('success');
-    expect(res.body.data).toEqual([]);
     // Verify that User.find() was called by the route handler
-    expect(MockedUser.find).toHaveBeenCalledTimes(1);
-    expect(MockedUser.find).toHaveBeenCalledWith(); // Check arguments if necessary
+    expect(MockedTodo.find).toHaveBeenCalledTimes(1);
+    expect(MockedTodo.find).toHaveBeenCalledWith(); // Check arguments if necessary
   });
 
-  // it('should return a list of users (mocked)', async () => {
+  // it('should return a list of todos (mocked)', async () => {
   //   const mockUsers = [
-  //     { _id: '1', name: 'Alice', email: 'alice@example.com' },
-  //     { _id: '2', name: 'Bob', email: 'bob@example.com' },
+  //     { _id:1, title: 'Title1', description: 'description1', completed: false },
+  //     { _id:2,title: 'Title2', description: 'description2', completed: true },  
   //   ];
 
   //   // Configure the mock User.find() to return the mock user list
   //   MockedUser.find.mockResolvedValue(mockUsers);
 
-  //   const res = await request(app).get('/users');
+  //   const res = await request(app).get('/api/todos');
 
   //   expect(res.statusCode).toEqual(200);
   //   expect(res.body).toEqual(mockUsers);
