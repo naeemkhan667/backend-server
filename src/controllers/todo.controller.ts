@@ -25,8 +25,8 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
     try {
-        const todos = await TodoModel.find();
-       res.success(todos, 200, "Todos fetched successfully");
+        const todos = await TodoModel.find().sort({ _id: 1 });
+        res.success(todos, 200, "Todos fetched successfully");
     } catch (error) {
         console.error("Get All Todos Error:", error);
         next(error);
@@ -39,9 +39,9 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
         const todo = new TodoModel(req.body);
         const savedTodo = await todo.save();
         res.success([savedTodo], 201, "Todo created successfully");
-
+        return;
     } catch (error) {
-        console.error("Create Todo Error:", error);
+        //console.error("Create Todo Error:", error);
         next(error);
     }
 };
